@@ -1,0 +1,426 @@
+{
+  "ipc_sections": [
+    {
+      "section": "120B",
+      "title": "Punishment of criminal conspiracy",
+      "description": "Whoever is a party to a criminal conspiracy to commit an offence punishable with death, imprisonment for life or rigorous imprisonment for a term of two years or upwards, shall be punished in the same manner as if he had abetted such offence.",
+      "punishment": "Same as the offence conspired, or imprisonment up to 6 months or fine or both if no punishment is specified",
+      "keywords": ["conspiracy", "criminal conspiracy", "planning crime", "agreement to commit crime"]
+    },
+    {
+      "section": "121",
+      "title": "Waging war against the Government of India",
+      "description": "Whoever wages war against the Government of India, or attempts to wage such war, or abets the waging of such war, shall be punished with death, or imprisonment for life and shall also be liable to fine.",
+      "punishment": "Death or life imprisonment and fine",
+      "keywords": ["treason", "waging war", "sedition", "anti-national activities", "rebellion"]
+    },
+    {
+      "section": "302",
+      "title": "Punishment for murder",
+      "description": "Whoever commits murder shall be punished with death, or imprisonment for life, and shall also be liable to fine.",
+      "punishment": "Death or life imprisonment and fine",
+      "keywords": ["murder", "killing", "homicide", "intentional death", "premeditated killing"]
+    },
+    {
+      "section": "304",
+      "title": "Punishment for culpable homicide not amounting to murder",
+      "description": "Whoever commits culpable homicide not amounting to murder shall be punished with imprisonment for life, or imprisonment of either description for a term which may extend to ten years, and shall also be liable to fine.",
+      "punishment": "Life imprisonment or up to 10 years imprisonment and fine",
+      "keywords": ["culpable homicide", "manslaughter", "unintentional killing", "negligent death"]
+    },
+    {
+      "section": "304A",
+      "title": "Causing death by negligence",
+      "description": "Whoever causes the death of any person by doing any rash or negligent act not amounting to culpable homicide, shall be punished with imprisonment of either description for a term which may extend to two years, or with fine, or with both.",
+      "punishment": "Up to 2 years imprisonment or fine or both",
+      "keywords": ["negligent death", "accidental death", "rash driving", "medical negligence", "death by negligence"]
+    },
+    {
+      "section": "304B",
+      "title": "Dowry death",
+      "description": "Where the death of a woman is caused by any burns or bodily injury or occurs otherwise than under normal circumstances within seven years of her marriage and it is shown that soon before her death she was subjected to cruelty or harassment by her husband or any relative of her husband for, or in connection with, any demand for dowry, such death shall be called 'dowry death', and such husband or relative shall be deemed to have caused her death.",
+      "punishment": "Minimum 7 years imprisonment, may extend to life imprisonment",
+      "keywords": ["dowry death", "dowry harassment", "bride burning", "domestic violence", "dowry demand"]
+    },
+    {
+      "section": "305",
+      "title": "Abetment of suicide of child or insane person",
+      "description": "If any person under eighteen years of age, any insane person, any delirious person, any idiot, or any person in a state of intoxication, commits suicide, whoever abets the commission of such suicide, shall be punished with death or imprisonment for life, or imprisonment for a term not exceeding ten years, and shall also be liable to fine.",
+      "punishment": "Death or life imprisonment or up to 10 years imprisonment and fine",
+      "keywords": ["abetment of suicide", "child suicide", "insane person suicide", "suicide instigation"]
+    },
+    {
+      "section": "306",
+      "title": "Abetment of suicide",
+      "description": "If any person commits suicide, whoever abets the commission of such suicide, shall be punished with imprisonment of either description for a term which may extend to ten years, and shall also be liable to fine.",
+      "punishment": "Up to 10 years imprisonment and fine",
+      "keywords": ["abetment of suicide", "suicide instigation", "driving to suicide", "encouraging suicide"]
+    },
+    {
+      "section": "307",
+      "title": "Attempt to murder",
+      "description": "Whoever does any act with such intention or knowledge, and under such circumstances that, if he by that act caused death, he would be guilty of murder, shall be punished with imprisonment of either description for a term which may extend to ten years, and shall also be liable to fine.",
+      "punishment": "Up to 10 years imprisonment and fine; if hurt caused, life imprisonment possible",
+      "keywords": ["attempt to murder", "attempted killing", "assault with intent to kill"]
+    },
+    {
+      "section": "323",
+      "title": "Punishment for voluntarily causing hurt",
+      "description": "Whoever, except in the case provided for by section 334, voluntarily causes hurt, shall be punished with imprisonment of either description for a term which may extend to one year, or with fine which may extend to one thousand rupees, or with both.",
+      "punishment": "Up to 1 year imprisonment or fine up to Rs. 1000 or both",
+      "keywords": ["assault", "hurt", "physical harm", "battery", "injury"]
+    },
+    {
+      "section": "324",
+      "title": "Voluntarily causing hurt by dangerous weapons or means",
+      "description": "Whoever, except in the case provided for by section 334, voluntarily causes hurt by means of any instrument for shooting, stabbing or cutting, or any instrument which, used as a weapon of offence, is likely to cause death, shall be punished with imprisonment of either description for a term which may extend to three years, or with fine, or with both.",
+      "punishment": "Up to 3 years imprisonment or fine or both",
+      "keywords": ["hurt with weapon", "assault with weapon", "stabbing", "shooting", "dangerous weapons"]
+    },
+    {
+      "section": "325",
+      "title": "Punishment for voluntarily causing grievous hurt",
+      "description": "Whoever, except in the case provided for by section 335, voluntarily causes grievous hurt, shall be punished with imprisonment of either description for a term which may extend to seven years, and shall also be liable to fine.",
+      "punishment": "Up to 7 years imprisonment and fine",
+      "keywords": ["grievous hurt", "serious injury", "severe assault", "major harm"]
+    },
+    {
+      "section": "326",
+      "title": "Voluntarily causing grievous hurt by dangerous weapons or means",
+      "description": "Whoever, except in the case provided for by section 335, voluntarily causes grievous hurt by means of any instrument for shooting, stabbing or cutting, or any instrument which, used as a weapon of offence, is likely to cause death, shall be punished with imprisonment for life, or with imprisonment of either description for a term which may extend to ten years, and shall also be liable to fine.",
+      "punishment": "Life imprisonment or up to 10 years imprisonment and fine",
+      "keywords": ["grievous hurt with weapon", "serious assault with weapon", "acid attack", "knife attack"]
+    },
+    {
+      "section": "354",
+      "title": "Assault or criminal force to woman with intent to outrage her modesty",
+      "description": "Whoever assaults or uses criminal force to any woman, intending to outrage or knowing it to be likely that he will thereby outrage her modesty, shall be punished with imprisonment of either description for a term which shall not be less than one year but which may extend to five years, and shall also be liable to fine.",
+      "punishment": "Minimum 1 year, up to 5 years imprisonment and fine",
+      "keywords": ["molestation", "outraging modesty", "sexual harassment", "inappropriate touching", "assault on woman"]
+    },
+    {
+      "section": "363",
+      "title": "Punishment for kidnapping",
+      "description": "Whoever kidnaps any person from India or from lawful guardianship, shall be punished with imprisonment of either description for a term which may extend to seven years, and shall also be liable to fine.",
+      "punishment": "Up to 7 years imprisonment and fine",
+      "keywords": ["kidnapping", "abduction", "child kidnapping", "unlawful confinement"]
+    },
+    {
+      "section": "365",
+      "title": "Kidnapping or abducting with intent secretly and wrongfully to confine person",
+      "description": "Whoever kidnaps or abducts any person with intent to cause that person to be secretly and wrongfully confined, shall be punished with imprisonment of either description for a term which may extend to seven years, and shall also be liable to fine.",
+      "punishment": "Up to 7 years imprisonment and fine",
+      "keywords": ["kidnapping for confinement", "wrongful confinement", "illegal detention", "abduction"]
+    },
+    {
+      "section": "376",
+      "title": "Punishment for rape",
+      "description": "Whoever commits rape shall be punished with rigorous imprisonment of either description for a term which shall not be less than ten years, but which may extend to imprisonment for life, and shall also be liable to fine.",
+      "punishment": "Minimum 10 years rigorous imprisonment, up to life imprisonment and fine",
+      "keywords": ["rape", "sexual assault", "sexual violence", "forced intercourse"]
+    },
+    {
+      "section": "377",
+      "title": "Unnatural offences",
+      "description": "Whoever voluntarily has carnal intercourse against the order of nature with any man, woman or animal, shall be punished with imprisonment for life, or with imprisonment of either description for a term which may extend to ten years, and shall also be liable to fine.",
+      "punishment": "Life imprisonment or up to 10 years imprisonment and fine",
+      "keywords": ["unnatural sex", "sodomy", "bestiality", "carnal intercourse"]
+    },
+    {
+      "section": "379",
+      "title": "Punishment for theft",
+      "description": "Whoever commits theft shall be punished with imprisonment of either description for a term which may extend to three years, or with fine, or with both.",
+      "punishment": "Up to 3 years imprisonment or fine or both",
+      "keywords": ["theft", "stealing", "larceny", "dishonest taking"]
+    },
+    {
+      "section": "380",
+      "title": "Theft in dwelling house, etc.",
+      "description": "Whoever commits theft in any building, tent or vessel, which building, tent or vessel is used as a human dwelling, or used for the custody of property, shall be punished with imprisonment of either description for a term which may extend to seven years, and shall also be liable to fine.",
+      "punishment": "Up to 7 years imprisonment and fine",
+      "keywords": ["house theft", "burglary", "dwelling house theft", "breaking and entering"]
+    },
+    {
+      "section": "392",
+      "title": "Punishment for robbery",
+      "description": "Whoever commits robbery shall be punished with rigorous imprisonment for a term which may extend to ten years, and shall also be liable to fine.",
+      "punishment": "Up to 10 years rigorous imprisonment and fine",
+      "keywords": ["robbery", "armed robbery", "dacoity", "theft with violence"]
+    },
+    {
+      "section": "395",
+      "title": "Punishment for dacoity",
+      "description": "Whoever commits dacoity shall be punished with imprisonment for life, or with rigorous imprisonment for a term which may extend to ten years, and shall also be liable to fine.",
+      "punishment": "Life imprisonment or up to 10 years rigorous imprisonment and fine",
+      "keywords": ["dacoity", "gang robbery", "organized robbery", "group theft"]
+    },
+    {
+      "section": "396",
+      "title": "Dacoity with murder",
+      "description": "If any one of five or more persons, who are conjointly committing dacoity, commits murder in so committing dacoity, every one of those persons shall be punished with death, or imprisonment for life, or rigorous imprisonment for a term which may extend to ten years, and shall also be liable to fine.",
+      "punishment": "Death or life imprisonment or up to 10 years rigorous imprisonment and fine",
+      "keywords": ["dacoity with murder", "robbery murder", "gang violence", "organized crime murder"]
+    },
+    {
+      "section": "406",
+      "title": "Punishment for criminal breach of trust",
+      "description": "Whoever commits criminal breach of trust shall be punished with imprisonment of either description for a term which may extend to three years, or with fine, or with both.",
+      "punishment": "Up to 3 years imprisonment or fine or both",
+      "keywords": ["breach of trust", "embezzlement", "misappropriation", "criminal breach"]
+    },
+    {
+      "section": "420",
+      "title": "Cheating and dishonestly inducing delivery of property",
+      "description": "Whoever cheats and thereby dishonestly induces the person deceived to deliver any property to any person, or to make, alter or destroy the whole or any part of a valuable security, shall be punished with imprisonment of either description for a term which may extend to seven years, and shall also be liable to fine.",
+      "punishment": "Up to 7 years imprisonment and fine",
+      "keywords": ["cheating", "fraud", "deception", "dishonesty", "inducement"]
+    },
+    {
+      "section": "467",
+      "title": "Forgery of valuable security, will, etc.",
+      "description": "Whoever forges a document which purports to be a valuable security or a will, or an authority to adopt a son, or which purports to give authority to any person to make or transfer any valuable security, shall be punished with imprisonment for life, or with imprisonment of either description for a term which may extend to ten years, and shall also be liable to fine.",
+      "punishment": "Life imprisonment or up to 10 years imprisonment and fine",
+      "keywords": ["forgery", "document forgery", "will forgery", "fake documents", "counterfeit"]
+    },
+    {
+      "section": "471",
+      "title": "Using as genuine a forged document",
+      "description": "Whoever fraudulently or dishonestly uses as genuine any document which he knows or has reason to believe to be a forged document, shall be punished in the same manner as if he had forged such document.",
+      "punishment": "Same as forgery of that document",
+      "keywords": ["using forged document", "fake document usage", "fraudulent documents"]
+    },
+    {
+      "section": "489A",
+      "title": "Counterfeiting currency notes or bank notes",
+      "description": "Whoever counterfeits, or knowingly performs any part of the process of counterfeiting, any currency note or bank note, shall be punished with imprisonment for life, or with imprisonment of either description for a term which may extend to ten years, and shall also be liable to fine.",
+      "punishment": "Life imprisonment or up to 10 years imprisonment and fine",
+      "keywords": ["counterfeit currency", "fake money", "currency forgery", "fake notes"]
+    },
+    {
+      "section": "498A",
+      "title": "Husband or relative of husband of a woman subjecting her to cruelty",
+      "description": "Whoever, being the husband or the relative of the husband of a woman, subjects such woman to cruelty shall be punished with imprisonment for a term which may extend to three years and shall also be liable to fine.",
+      "punishment": "Up to 3 years imprisonment and fine",
+      "keywords": ["domestic violence", "cruelty to wife", "dowry harassment", "marital cruelty", "torture"]
+    },
+    {
+      "section": "509",
+      "title": "Word, gesture or act intended to insult the modesty of a woman",
+      "description": "Whoever, intending to insult the modesty of any woman, utters any word, makes any sound or gesture, or exhibits any object, intending that such word or sound shall be heard, or that such gesture or object shall be seen, by such woman, shall be punished with simple imprisonment for a term which may extend to three years, and also with fine.",
+      "punishment": "Up to 3 years simple imprisonment and fine",
+      "keywords": ["insult to modesty", "verbal harassment", "eve teasing", "vulgar gestures", "sexual remarks"]
+    }
+  ],
+  "bns_sections": [
+    {
+      "section": "61",
+      "title": "Punishment of criminal conspiracy",
+      "description": "Whoever is a party to a criminal conspiracy shall be punished in the same manner as if he had abetted such offence.",
+      "punishment": "Same as the offence conspired, or imprisonment up to 6 months or fine or both",
+      "keywords": ["conspiracy", "criminal conspiracy", "planning crime", "agreement to commit crime"]
+    },
+    {
+      "section": "147",
+      "title": "Waging war against Government of India",
+      "description": "Whoever wages war against the Government of India, or attempts to wage such war, or abets the waging of such war, shall be punished with death or imprisonment for life, and shall also be liable to fine.",
+      "punishment": "Death or life imprisonment and fine",
+      "keywords": ["treason", "waging war", "sedition", "anti-national activities", "rebellion"]
+    },
+    {
+      "section": "103",
+      "title": "Punishment for murder",
+      "description": "Whoever commits murder shall be punished with death or imprisonment for life, and shall also be liable to fine.",
+      "punishment": "Death or life imprisonment and fine",
+      "keywords": ["murder", "killing", "homicide", "intentional death", "premeditated killing"]
+    },
+    {
+      "section": "105",
+      "title": "Punishment for culpable homicide not amounting to murder",
+      "description": "Whoever commits culpable homicide not amounting to murder shall be punished with imprisonment for life, or imprisonment of either description for a term which may extend to ten years, and shall also be liable to fine.",
+      "punishment": "Life imprisonment or up to 10 years imprisonment and fine",
+      "keywords": ["culpable homicide", "manslaughter", "unintentional killing", "negligent death"]
+    },
+    {
+      "section": "106",
+      "title": "Causing death by negligence",
+      "description": "Whoever causes death of any person by doing any rash or negligent act not amounting to culpable homicide, shall be punished with imprisonment of either description for a term which may extend to five years, and shall also be liable to fine.",
+      "punishment": "Up to 5 years imprisonment and fine",
+      "keywords": ["negligent death", "accidental death", "rash driving", "medical negligence", "death by negligence"]
+    },
+    {
+      "section": "80",
+      "title": "Dowry death",
+      "description": "Where the death of a woman is caused by burns or bodily injury or occurs otherwise than under normal circumstances within seven years of her marriage and it is shown that she was subjected to cruelty or harassment for dowry, such death shall be called dowry death.",
+      "punishment": "Minimum 7 years imprisonment, may extend to life imprisonment",
+      "keywords": ["dowry death", "dowry harassment", "bride burning", "domestic violence", "dowry demand"]
+    },
+    {
+      "section": "108",
+      "title": "Abetment of suicide",
+      "description": "If any person commits suicide, whoever abets the commission of such suicide, shall be punished with imprisonment of either description for a term which may extend to ten years, and shall also be liable to fine.",
+      "punishment": "Up to 10 years imprisonment and fine",
+      "keywords": ["abetment of suicide", "suicide instigation", "driving to suicide", "encouraging suicide"]
+    },
+    {
+      "section": "109",
+      "title": "Attempt to murder",
+      "description": "Whoever does any act with such intention or knowledge, and under such circumstances that, if he by that act caused death, he would be guilty of murder, shall be punished with imprisonment of either description for a term which may extend to ten years, and shall also be liable to fine.",
+      "punishment": "Up to 10 years imprisonment and fine; if hurt caused, life imprisonment possible",
+      "keywords": ["attempt to murder", "attempted killing", "assault with intent to kill"]
+    },
+    {
+      "section": "115",
+      "title": "Punishment for voluntarily causing hurt",
+      "description": "Whoever voluntarily causes hurt shall be punished with imprisonment of either description for a term which may extend to one year, or with fine which may extend to one thousand rupees, or with both.",
+      "punishment": "Up to 1 year imprisonment or fine up to Rs. 1000 or both",
+      "keywords": ["assault", "hurt", "physical harm", "battery", "injury"]
+    },
+    {
+      "section": "116",
+      "title": "Voluntarily causing hurt by dangerous weapons or means",
+      "description": "Whoever voluntarily causes hurt by means of any instrument for shooting, stabbing or cutting, or any instrument which is likely to cause death, shall be punished with imprisonment of either description for a term which may extend to three years, or with fine, or with both.",
+      "punishment": "Up to 3 years imprisonment or fine or both",
+      "keywords": ["hurt with weapon", "assault with weapon", "stabbing", "shooting", "dangerous weapons"]
+    },
+    {
+      "section": "117",
+      "title": "Punishment for voluntarily causing grievous hurt",
+      "description": "Whoever voluntarily causes grievous hurt shall be punished with imprisonment of either description for a term which may extend to seven years, and shall also be liable to fine.",
+      "punishment": "Up to 7 years imprisonment and fine",
+      "keywords": ["grievous hurt", "serious injury", "severe assault", "major harm"]
+    },
+    {
+      "section": "118",
+      "title": "Voluntarily causing grievous hurt by dangerous weapons or means",
+      "description": "Whoever voluntarily causes grievous hurt by means of any instrument for shooting, stabbing or cutting, shall be punished with imprisonment for life, or with imprisonment of either description for a term which may extend to ten years, and shall also be liable to fine.",
+      "punishment": "Life imprisonment or up to 10 years imprisonment and fine",
+      "keywords": ["grievous hurt with weapon", "serious assault with weapon", "acid attack", "knife attack"]
+    },
+    {
+      "section": "74",
+      "title": "Assault or use of criminal force to woman with intent to outrage her modesty",
+      "description": "Whoever assaults or uses criminal force to any woman, intending to outrage or knowing it to be likely that he will thereby outrage her modesty, shall be punished with imprisonment of either description for a term which shall not be less than one year but which may extend to five years, and shall also be liable to fine.",
+      "punishment": "Minimum 1 year, up to 5 years imprisonment and fine",
+      "keywords": ["molestation", "outraging modesty", "sexual harassment", "inappropriate touching", "assault on woman"]
+    },
+    {
+      "section": "137",
+      "title": "Punishment for kidnapping",
+      "description": "Whoever kidnaps any person from India or from lawful guardianship shall be punished with imprisonment of either description for a term which may extend to seven years, and shall also be liable to fine.",
+      "punishment": "Up to 7 years imprisonment and fine",
+      "keywords": ["kidnapping", "abduction", "child kidnapping", "unlawful confinement"]
+    },
+    {
+      "section": "139",
+      "title": "Kidnapping or abducting with intent to secretly and wrongfully confine person",
+      "description": "Whoever kidnaps or abducts any person with intent to cause that person to be secretly and wrongfully confined, shall be punished with imprisonment of either description for a term which may extend to seven years, and shall also be liable to fine.",
+      "punishment": "Up to 7 years imprisonment and fine",
+      "keywords": ["kidnapping for confinement", "wrongful confinement", "illegal detention", "abduction"]
+    },
+    {
+      "section": "63",
+      "title": "Punishment for rape",
+      "description": "Whoever commits rape shall be punished with rigorous imprisonment of either description for a term which shall not be less than ten years, but which may extend to imprisonment for life, and shall also be liable to fine.",
+      "punishment": "Minimum 10 years rigorous imprisonment, up to life imprisonment and fine",
+      "keywords": ["rape", "sexual assault", "sexual violence", "forced intercourse"]
+    },
+    {
+      "section": "69",
+      "title": "Sexual intercourse by husband upon his wife during separation",
+      "description": "Whoever has sexual intercourse with his own wife, who is living separately, whether under a decree of separation or otherwise, without her consent, shall be punished with imprisonment of either description for a term which may extend to two years and shall also be liable to fine.",
+      "punishment": "Up to 2 years imprisonment and fine",
+      "keywords": ["marital rape", "non-consensual sex", "separated wife", "forced intercourse"]
+    },
+    {
+      "section": "303",
+      "title": "Punishment for theft",
+      "description": "Whoever commits theft shall be punished with imprisonment of either description for a term which may extend to three years, or with fine, or with both.",
+      "punishment": "Up to 3 years imprisonment or fine or both",
+      "keywords": ["theft", "stealing", "larceny", "dishonest taking"]
+    },
+    {
+      "section": "305",
+      "title": "Theft in dwelling house",
+      "description": "Whoever commits theft in any building, tent or vessel used as a human dwelling, shall be punished with imprisonment of either description for a term which may extend to seven years, and shall also be liable to fine.",
+      "punishment": "Up to 7 years imprisonment and fine",
+      "keywords": ["house theft", "burglary", "dwelling house theft", "breaking and entering"]
+    },
+    {
+      "section": "309",
+      "title": "Punishment for robbery",
+      "description": "Whoever commits robbery shall be punished with rigorous imprisonment for a term which may extend to ten years, and shall also be liable to fine.",
+      "punishment": "Up to 10 years rigorous imprisonment and fine",
+      "keywords": ["robbery", "armed robbery", "dacoity", "theft with violence"]
+    },
+    {
+      "section": "310",
+      "title": "Punishment for dacoity",
+      "description": "Whoever commits dacoity shall be punished with imprisonment for life, or with rigorous imprisonment for a term which may extend to ten years, and shall also be liable to fine.",
+      "punishment": "Life imprisonment or up to 10 years rigorous imprisonment and fine",
+      "keywords": ["dacoity", "gang robbery", "organized robbery", "group theft"]
+    },
+    {
+      "section": "311",
+      "title": "Dacoity with murder",
+      "description": "If any one of five or more persons conjointly committing dacoity commits murder in so committing dacoity, every one of those persons shall be punished with death or imprisonment for life, or rigorous imprisonment for a term which may extend to ten years, and shall also be liable to fine.",
+      "punishment": "Death or life imprisonment or up to 10 years rigorous imprisonment and fine",
+      "keywords": ["dacoity with murder", "robbery murder", "gang violence", "organized crime murder"]
+    },
+    {
+      "section": "316",
+      "title": "Punishment for criminal breach of trust",
+      "description": "Whoever commits criminal breach of trust shall be punished with imprisonment of either description for a term which may extend to three years, or with fine, or with both.",
+      "punishment": "Up to 3 years imprisonment or fine or both",
+      "keywords": ["breach of trust", "embezzlement", "misappropriation", "criminal breach"]
+    },
+    {
+      "section": "318",
+      "title": "Cheating and dishonestly inducing delivery of property",
+      "description": "Whoever cheats and thereby dishonestly induces the person deceived to deliver any property to any person, shall be punished with imprisonment of either description for a term which may extend to seven years, and shall also be liable to fine.",
+      "punishment": "Up to 7 years imprisonment and fine",
+      "keywords": ["cheating", "fraud", "deception", "dishonesty", "inducement"]
+    },
+    {
+      "section": "336",
+      "title": "Forgery of valuable security, will, etc.",
+      "description": "Whoever forges a document purporting to be a valuable security or a will, shall be punished with imprisonment for life, or with imprisonment of either description for a term which may extend to ten years, and shall also be liable to fine.",
+      "punishment": "Life imprisonment or up to 10 years imprisonment and fine",
+      "keywords": ["forgery", "document forgery", "will forgery", "fake documents", "counterfeit"]
+    },
+    {
+      "section": "340",
+      "title": "Using as genuine a forged document or electronic record",
+      "description": "Whoever fraudulently or dishonestly uses as genuine any document or electronic record which he knows or has reason to believe to be a forged document or electronic record, shall be punished in the same manner as if he had forged such document or electronic record.",
+      "punishment": "Same as forgery of that document",
+      "keywords": ["using forged document", "fake document usage", "fraudulent documents", "electronic forgery"]
+    },
+    {
+      "section": "178",
+      "title": "Counterfeiting currency notes or bank notes",
+      "description": "Whoever counterfeits, or knowingly performs any part of the process of counterfeiting, any currency note or bank note, shall be punished with imprisonment for life, or with imprisonment of either description for a term which may extend to ten years, and shall also be liable to fine.",
+      "punishment": "Life imprisonment or up to 10 years imprisonment and fine",
+      "keywords": ["counterfeit currency", "fake money", "currency forgery", "fake notes"]
+    },
+    {
+      "section": "84",
+      "title": "Husband or relative of husband subjecting woman to cruelty",
+      "description": "Whoever, being the husband or the relative of the husband of a woman, subjects such woman to cruelty shall be punished with imprisonment for a term which may extend to three years and shall also be liable to fine.",
+      "punishment": "Up to 3 years imprisonment and fine",
+      "keywords": ["domestic violence", "cruelty to wife", "dowry harassment", "marital cruelty", "torture"]
+    },
+    {
+      "section": "79",
+      "title": "Word, gesture or act intended to insult modesty of a woman",
+      "description": "Whoever, intending to insult the modesty of any woman, utters any word, makes any sound or gesture, or exhibits any object, intending that such word or sound shall be heard, or that such gesture or object shall be seen by such woman, shall be punished with simple imprisonment for a term which may extend to three years, and also with fine.",
+      "punishment": "Up to 3 years simple imprisonment and fine",
+      "keywords": ["insult to modesty", "verbal harassment", "eve teasing", "vulgar gestures", "sexual remarks"]
+    },
+    {
+      "section": "66",
+      "title": "Punishment for causing death or resulting in persistent vegetative state of victim",
+      "description": "Whoever commits an offence punishable under section 64 or section 65 and in the course of such commission inflicts an injury which causes the death of the victim or causes the victim to be in a persistent vegetative state, shall be punished with rigorous imprisonment for a term which shall not be less than twenty years, but which may extend to imprisonment for life, which shall mean imprisonment for the remainder of that person's natural life, or with death.",
+      "punishment": "Minimum 20 years rigorous imprisonment, up to life imprisonment or death",
+      "keywords": ["rape with murder", "sexual assault death", "gang rape murder", "rape resulting in death"]
+    }
+  ]
+}
