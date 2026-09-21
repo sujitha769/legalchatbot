@@ -13,14 +13,14 @@
     "legal",
     "chatbot",
     "rag",
-    "pinecone",
+    "qdrant",
     "groq"
   ],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@huggingface/transformers": "^3.7.2",
-    "@pinecone-database/pinecone": "^6.1.4",
+    "@qdrant/js-client-rest": "^1.15.1",
     "cors": "^2.8.6",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
