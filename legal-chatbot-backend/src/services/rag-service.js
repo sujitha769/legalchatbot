@@ -1,59 +1,34 @@
-import Groq from "groq-sdk";
-import { pipeline } from "@xenova/transformers";
+import OpenAI from "openai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import { pc, indexName } from "../config/pinecone.js";
 import dotenv from "dotenv";
 
 dotenv.config();
 
-const groq = new Groq({
+const client = new OpenAI({
   apiKey: process.env.GROQ_API_KEY,
+  baseURL: "https://api.groq.com/openai/v1",
 });
 
-let embeddingModel = null;
-
-// Load local embedding model only once
-async function getEmbeddingModel() {
-  if (!embeddingModel) {
-    console.log("Loading embedding model...");
-
-    embeddingModel = await pipeline(
-      "feature-extraction",
-      "Xenova/all-MiniLM-L6-v2"
-    );
-
-    console.log("Embedding model loaded");
-  }
-
-  return embeddingModel;
-}
-
-// Create embedding locally
-async function createEmbedding(text) {
-  const model = await getEmbeddingModel();
-
-  const output = await model(text, {
-    pooling: "mean",
-    normalize: true,
-  });
-
-  return Array.from(output.data);
-}
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 export async function getLegalAnswerWithRAG(crimeText) {
   try {
-    console.log(
-      `Processing query: ${crimeText.substring(0, 50)}...`
-    );
+    console.log(`Processing query: ${crimeText.substring(0, 50)}...`);
 
     // ==========================================
-    // STEP 1: CREATE QUERY EMBEDDING
+    // STEP 1: CREATE EMBEDDING
     // ==========================================
 
-    const queryEmbedding = await createEmbedding(crimeText);
+    const embeddingModel = genAI.getGenerativeModel({
+      model: "text-embedding-004",
+    });
 
-    console.log(
-      `Created embedding with ${queryEmbedding.length} dimensions`
-    );
+    const embeddingResult =
+      await embeddingModel.embedContent(crimeText);
+
+    const queryEmbedding =
+      embeddingResult.embedding.values;
 
     // ==========================================
     // STEP 2: SEARCH PINECONE
@@ -72,7 +47,7 @@ export async function getLegalAnswerWithRAG(crimeText) {
     );
 
     // ==========================================
-    // STEP 3: GET RELEVANT LEGAL SECTIONS
+    // STEP 3: GET RELEVANT SECTIONS
     // ==========================================
 
     const relevantSections = searchResults.matches
@@ -91,11 +66,11 @@ export async function getLegalAnswerWithRAG(crimeText) {
       "RELEVANT LEGAL SECTIONS FROM DATABASE:\n\n";
 
     const ipcSections = relevantSections.filter(
-      (section) => section.type === "IPC"
+      (s) => s.type === "IPC"
     );
 
     const bnsSections = relevantSections.filter(
-      (section) => section.type === "BNS"
+      (s) => s.type === "BNS"
     );
 
     if (ipcSections.length > 0) {
@@ -119,20 +94,19 @@ export async function getLegalAnswerWithRAG(crimeText) {
     }
 
     // ==========================================
-    // STEP 5: CREATE RAG PROMPT
+    // STEP 5: CREATE PROMPT
     // ==========================================
 
     const prompt = `
 You are a legal information assistant for Indian law.
 
-Use ONLY the information provided in the database context below.
+Use ONLY the information provided below to answer the query.
 
 ${context}
 
-Crime description:
-"${crimeText}"
+Crime description: "${crimeText}"
 
-Based ONLY on the legal sections provided above, format your response as follows:
+Based ONLY on the relevant sections provided above, format your response as follows:
 
 INDIAN PENAL CODE (IPC)
 
@@ -148,44 +122,30 @@ Punishment: [punishment details from database]
 
 CRITICAL RULES:
 
-- Use ONLY the sections provided in the context.
-- Do NOT invent legal sections.
-- Do NOT invent punishment.
-- Copy punishment details exactly as provided in the database.
+- Use ONLY the sections provided in the context above.
+- Copy the punishment details EXACTLY as provided in the database.
+- Do NOT add, modify, or invent any information.
 - If multiple sections apply, list all of them.
-- If no IPC section applies, skip the IPC section.
-- If no BNS section applies, skip the BNS section.
-- Do not add information that is not present in the database.
+- If no section from a particular code applies, skip that section entirely.
+- Be accurate and use the exact wording from the database.
 `;
 
     // ==========================================
     // STEP 6: GROQ
     // ==========================================
 
-    const completion = await groq.chat.completions.create({
+    const response = await client.responses.create({
       model: "openai/gpt-oss-20b",
-      messages: [
-        {
-          role: "system",
-          content:
-            "You are a precise legal information assistant. Follow the provided database context strictly.",
-        },
-        {
-          role: "user",
-          content: prompt,
-        },
-      ],
-      temperature: 0,
+      input: prompt,
     });
 
-    const text =
-      completion.choices[0]?.message?.content?.trim();
+    const text = response.output_text?.trim();
 
     if (!text) {
       throw new Error("Groq returned an empty response");
     }
 
-    console.log("Generated response with Groq + RAG");
+    console.log("Generated response with Groq");
 
     return text;
 
