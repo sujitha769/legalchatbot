@@ -10,7 +10,8 @@ dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const COLLECTION_NAME = "legal-sections";
+const COLLECTION_NAME =
+  process.env.QDRANT_COLLECTION_NAME || "legal-sections";
 
 const qdrant = new QdrantClient({
   url: process.env.QDRANT_URL,
@@ -18,6 +19,10 @@ const qdrant = new QdrantClient({
 });
 
 let embeddingModel = null;
+
+// ==========================================
+// CREATE EMBEDDING
+// ==========================================
 
 async function createEmbedding(text) {
   if (!embeddingModel) {
@@ -39,9 +44,14 @@ async function createEmbedding(text) {
   return Array.from(output.data);
 }
 
+// ==========================================
+// UPLOAD LEGAL DATA
+// ==========================================
+
 async function uploadLegalData() {
   try {
     console.log("Starting upload to Qdrant...");
+    console.log("Collection:", COLLECTION_NAME);
 
     // ==========================================
     // STEP 1: CHECK QDRANT
@@ -82,7 +92,6 @@ async function uploadLegalData() {
     );
 
     const rawData = fs.readFileSync(dataPath, "utf-8");
-
     const legalData = JSON.parse(rawData);
 
     console.log(
@@ -99,7 +108,6 @@ async function uploadLegalData() {
 
     const points = [];
 
-    // IPC
     console.log("\nProcessing IPC sections...");
 
     for (const section of legalData.ipc_sections) {
@@ -129,7 +137,6 @@ Keywords: ${section.keywords.join(", ")}
       );
     }
 
-    // BNS
     console.log("\nProcessing BNS sections...");
 
     for (const section of legalData.bns_sections) {
@@ -164,9 +171,9 @@ Keywords: ${section.keywords.join(", ")}
     // ==========================================
 
     console.log("\nUploading vectors to Qdrant...");
+    console.log(`Total vectors: ${points.length}`);
 
     const batchSize = 50;
-
     let successCount = 0;
 
     for (let i = 0; i < points.length; i += batchSize) {
@@ -187,7 +194,7 @@ Keywords: ${section.keywords.join(", ")}
       successCount += batch.length;
 
       console.log(
-        `✓ Batch ${batchNumber} uploaded`
+        `✓ Batch ${batchNumber} uploaded successfully`
       );
     }
 
@@ -207,14 +214,15 @@ Keywords: ${section.keywords.join(", ")}
 
     console.log("\n✅ Upload completed!");
     console.log(
-      `Successfully uploaded: ${successCount}/${points.length}`
+      `Successfully uploaded: ${successCount}/${points.length} vectors`
     );
 
   } catch (error) {
-    console.error(
-      "❌ Upload failed:",
-      error.message
-    );
+    console.error("❌ Upload failed:", error.message);
+
+    if (error.cause) {
+      console.error("Cause:", error.cause);
+    }
 
     throw error;
   }
