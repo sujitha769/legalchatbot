@@ -1,38 +1,25 @@
-import OpenAI from "openai";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import Groq from "groq-sdk";
 import { pc, indexName } from "../config/pinecone.js";
 import dotenv from "dotenv";
 
 dotenv.config();
 
-const client = new OpenAI({
+const groq = new Groq({
   apiKey: process.env.GROQ_API_KEY,
-  baseURL: "https://api.groq.com/openai/v1",
 });
-
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 export async function getLegalAnswerWithRAG(crimeText) {
   try {
     console.log(`Processing query: ${crimeText.substring(0, 50)}...`);
 
     // ==========================================
-    // STEP 1: CREATE EMBEDDING
+    // STEP 1: PINECONE SEARCH
     // ==========================================
-
-    const embeddingModel = genAI.getGenerativeModel({
-      model: "text-embedding-004",
-    });
-
-    const embeddingResult =
-      await embeddingModel.embedContent(crimeText);
-
-    const queryEmbedding =
-      embeddingResult.embedding.values;
-
-    // ==========================================
-    // STEP 2: SEARCH PINECONE
-    // ==========================================
+    
+    // IMPORTANT:
+    // This assumes you already have a way to create
+    // the query embedding.
+    const queryEmbedding = await createEmbedding(crimeText);
 
     const index = pc.index(indexName);
 
@@ -47,7 +34,7 @@ export async function getLegalAnswerWithRAG(crimeText) {
     );
 
     // ==========================================
-    // STEP 3: GET RELEVANT SECTIONS
+    // STEP 2: GET RELEVANT LEGAL SECTIONS
     // ==========================================
 
     const relevantSections = searchResults.matches
@@ -55,15 +42,14 @@ export async function getLegalAnswerWithRAG(crimeText) {
       .map((match) => match.metadata);
 
     if (relevantSections.length === 0) {
-      return "No applicable legal sections found in the database for the described crime. Please provide more details or rephrase your description.";
+      return "No applicable legal sections found in the database for the described crime.";
     }
 
     // ==========================================
-    // STEP 4: BUILD CONTEXT
+    // STEP 3: BUILD CONTEXT
     // ==========================================
 
-    let context =
-      "RELEVANT LEGAL SECTIONS FROM DATABASE:\n\n";
+    let context = "RELEVANT LEGAL SECTIONS FROM DATABASE:\n\n";
 
     const ipcSections = relevantSections.filter(
       (s) => s.type === "IPC"
@@ -94,52 +80,54 @@ export async function getLegalAnswerWithRAG(crimeText) {
     }
 
     // ==========================================
-    // STEP 5: CREATE PROMPT
+    // STEP 4: GROQ
     // ==========================================
 
     const prompt = `
 You are a legal information assistant for Indian law.
 
-Use ONLY the information provided below to answer the query.
+Use ONLY the information provided below.
 
 ${context}
 
-Crime description: "${crimeText}"
+Crime description:
+"${crimeText}"
 
-Based ONLY on the relevant sections provided above, format your response as follows:
+Format the answer as:
 
 INDIAN PENAL CODE (IPC)
 
 Section: [section number]
 Title: [section title]
-Punishment: [punishment details from database]
+Punishment: [punishment]
 
 BHARATIYA NYAYA SANHITA (BNS)
 
 Section: [section number]
 Title: [section title]
-Punishment: [punishment details from database]
+Punishment: [punishment]
 
-CRITICAL RULES:
-
-- Use ONLY the sections provided in the context above.
-- Copy the punishment details EXACTLY as provided in the database.
-- Do NOT add, modify, or invent any information.
-- If multiple sections apply, list all of them.
-- If no section from a particular code applies, skip that section entirely.
-- Be accurate and use the exact wording from the database.
+Rules:
+- Use only the provided database information.
+- Do not invent sections.
+- Do not invent punishments.
+- Copy punishment exactly from the database.
+- If no IPC section applies, skip IPC.
+- If no BNS section applies, skip BNS.
 `;
 
-    // ==========================================
-    // STEP 6: GROQ
-    // ==========================================
-
-    const response = await client.responses.create({
+    const completion = await groq.chat.completions.create({
       model: "openai/gpt-oss-20b",
-      input: prompt,
+      messages: [
+        {
+          role: "user",
+          content: prompt,
+        },
+      ],
+      temperature: 0,
     });
 
-    const text = response.output_text?.trim();
+    const text = completion.choices[0]?.message?.content?.trim();
 
     if (!text) {
       throw new Error("Groq returned an empty response");
