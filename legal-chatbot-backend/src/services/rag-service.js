@@ -1,71 +1,138 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
-import { pc, indexName } from '../config/pinecone.js';
-import dotenv from 'dotenv';
+import Groq from "groq-sdk";
+import { pipeline } from "@xenova/transformers";
+import { pc, indexName } from "../config/pinecone.js";
+import dotenv from "dotenv";
 
 dotenv.config();
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const groq = new Groq({
+  apiKey: process.env.GROQ_API_KEY,
+});
+
+let embeddingModel = null;
+
+// Load local embedding model only once
+async function getEmbeddingModel() {
+  if (!embeddingModel) {
+    console.log("Loading embedding model...");
+
+    embeddingModel = await pipeline(
+      "feature-extraction",
+      "Xenova/all-MiniLM-L6-v2"
+    );
+
+    console.log("Embedding model loaded");
+  }
+
+  return embeddingModel;
+}
+
+// Create embedding locally
+async function createEmbedding(text) {
+  const model = await getEmbeddingModel();
+
+  const output = await model(text, {
+    pooling: "mean",
+    normalize: true,
+  });
+
+  return Array.from(output.data);
+}
 
 export async function getLegalAnswerWithRAG(crimeText) {
   try {
-    console.log(`Processing query: ${crimeText.substring(0, 50)}...`);
-    
-    // Step 1: Create embedding for the crime description
-    const embeddingModel = genAI.getGenerativeModel({ model: "text-embedding-004" });
-    const embeddingResult = await embeddingModel.embedContent(crimeText);
-    const queryEmbedding = embeddingResult.embedding.values;
-    
-    // Step 2: Search Pinecone for relevant sections
+    console.log(
+      `Processing query: ${crimeText.substring(0, 50)}...`
+    );
+
+    // ==========================================
+    // STEP 1: CREATE QUERY EMBEDDING
+    // ==========================================
+
+    const queryEmbedding = await createEmbedding(crimeText);
+
+    console.log(
+      `Created embedding with ${queryEmbedding.length} dimensions`
+    );
+
+    // ==========================================
+    // STEP 2: SEARCH PINECONE
+    // ==========================================
+
     const index = pc.index(indexName);
+
     const searchResults = await index.query({
       vector: queryEmbedding,
       topK: 6,
-      includeMetadata: true
+      includeMetadata: true,
     });
-    
-    console.log(`Found ${searchResults.matches.length} relevant sections`);
-    
-    // Step 3: Extract relevant legal sections
+
+    console.log(
+      `Found ${searchResults.matches.length} relevant sections`
+    );
+
+    // ==========================================
+    // STEP 3: GET RELEVANT LEGAL SECTIONS
+    // ==========================================
+
     const relevantSections = searchResults.matches
-      .filter(match => match.score > 0.5) // Only use highly relevant matches
-      .map(match => match.metadata);
-    
+      .filter((match) => match.score > 0.5)
+      .map((match) => match.metadata);
+
     if (relevantSections.length === 0) {
       return "No applicable legal sections found in the database for the described crime. Please provide more details or rephrase your description.";
     }
-    
-    // Step 4: Build context from retrieved sections
-    let context = "RELEVANT LEGAL SECTIONS FROM DATABASE:\n\n";
-    
-    const ipcSections = relevantSections.filter(s => s.type === 'IPC');
-    const bnsSections = relevantSections.filter(s => s.type === 'BNS');
-    
+
+    // ==========================================
+    // STEP 4: BUILD CONTEXT
+    // ==========================================
+
+    let context =
+      "RELEVANT LEGAL SECTIONS FROM DATABASE:\n\n";
+
+    const ipcSections = relevantSections.filter(
+      (section) => section.type === "IPC"
+    );
+
+    const bnsSections = relevantSections.filter(
+      (section) => section.type === "BNS"
+    );
+
     if (ipcSections.length > 0) {
       context += "INDIAN PENAL CODE (IPC):\n";
-      ipcSections.forEach(section => {
+
+      ipcSections.forEach((section) => {
         context += `Section ${section.section}: ${section.title}\n`;
         context += `Description: ${section.description}\n`;
         context += `Punishment: ${section.punishment}\n\n`;
       });
     }
-    
+
     if (bnsSections.length > 0) {
       context += "BHARATIYA NYAYA SANHITA (BNS):\n";
-      bnsSections.forEach(section => {
+
+      bnsSections.forEach((section) => {
         context += `Section ${section.section}: ${section.title}\n`;
         context += `Description: ${section.description}\n`;
         context += `Punishment: ${section.punishment}\n\n`;
       });
     }
-    
-    // Step 5: Create prompt with retrieved context
-    const prompt = `You are a legal expert assistant for Indian law. Use ONLY the information provided below to answer the query.
+
+    // ==========================================
+    // STEP 5: CREATE RAG PROMPT
+    // ==========================================
+
+    const prompt = `
+You are a legal information assistant for Indian law.
+
+Use ONLY the information provided in the database context below.
 
 ${context}
 
-Crime description: "${crimeText}"
+Crime description:
+"${crimeText}"
 
-Based ONLY on the relevant sections provided above, format your response as follows:
+Based ONLY on the legal sections provided above, format your response as follows:
 
 INDIAN PENAL CODE (IPC)
 
@@ -80,25 +147,53 @@ Title: [section title]
 Punishment: [punishment details from database]
 
 CRITICAL RULES:
-- Use ONLY the sections provided in the context above
-- Copy the punishment details EXACTLY as provided in the database
-- Do NOT add, modify, or invent any information
-- If multiple sections apply, list all of them
-- If no section from a particular code (IPC/BNS) applies, skip that section entirely
-- Be accurate and use the exact wording from the database
+
+- Use ONLY the sections provided in the context.
+- Do NOT invent legal sections.
+- Do NOT invent punishment.
+- Copy punishment details exactly as provided in the database.
+- If multiple sections apply, list all of them.
+- If no IPC section applies, skip the IPC section.
+- If no BNS section applies, skip the BNS section.
+- Do not add information that is not present in the database.
 `;
 
-    // Step 6: Generate response using Gemini
-    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    const text = response.text().trim();
-    
-    console.log("Generated response with RAG");
+    // ==========================================
+    // STEP 6: GROQ
+    // ==========================================
+
+    const completion = await groq.chat.completions.create({
+      model: "openai/gpt-oss-20b",
+      messages: [
+        {
+          role: "system",
+          content:
+            "You are a precise legal information assistant. Follow the provided database context strictly.",
+        },
+        {
+          role: "user",
+          content: prompt,
+        },
+      ],
+      temperature: 0,
+    });
+
+    const text =
+      completion.choices[0]?.message?.content?.trim();
+
+    if (!text) {
+      throw new Error("Groq returned an empty response");
+    }
+
+    console.log("Generated response with Groq + RAG");
+
     return text;
 
   } catch (error) {
     console.error("RAG Service Error:", error);
-    throw new Error("Failed to get legal answer: " + error.message);
+
+    throw new Error(
+      "Failed to get legal answer: " + error.message
+    );
   }
 }
