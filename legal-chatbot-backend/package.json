@@ -19,6 +19,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@huggingface/transformers": "^3.7.2",
     "@pinecone-database/pinecone": "^6.1.4",
     "cors": "^2.8.6",
     "dotenv": "^17.2.3",
