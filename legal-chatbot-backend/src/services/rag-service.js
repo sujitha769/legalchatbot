@@ -1,4 +1,5 @@
 import Groq from "groq-sdk";
+import { pipeline } from "@huggingface/transformers";
 import { pc, indexName } from "../config/pinecone.js";
 import dotenv from "dotenv";
 
@@ -8,18 +9,55 @@ const groq = new Groq({
   apiKey: process.env.GROQ_API_KEY,
 });
 
+let embeddingModel = null;
+
+// ==========================================
+// CREATE EMBEDDING LOCALLY
+// ==========================================
+
+async function createEmbedding(text) {
+  if (!embeddingModel) {
+    console.log("Loading embedding model...");
+
+    embeddingModel = await pipeline(
+      "feature-extraction",
+      "Xenova/all-MiniLM-L6-v2"
+    );
+
+    console.log("Embedding model loaded");
+  }
+
+  const output = await embeddingModel(text, {
+    pooling: "mean",
+    normalize: true,
+  });
+
+  return Array.from(output.data);
+}
+
+// ==========================================
+// LEGAL ANSWER WITH RAG
+// ==========================================
+
 export async function getLegalAnswerWithRAG(crimeText) {
   try {
-    console.log(`Processing query: ${crimeText.substring(0, 50)}...`);
+    console.log(
+      `Processing query: ${crimeText.substring(0, 50)}...`
+    );
 
     // ==========================================
-    // STEP 1: PINECONE SEARCH
+    // STEP 1: CREATE QUERY EMBEDDING
     // ==========================================
-    
-    // IMPORTANT:
-    // This assumes you already have a way to create
-    // the query embedding.
+
     const queryEmbedding = await createEmbedding(crimeText);
+
+    console.log(
+      `Embedding created: ${queryEmbedding.length} dimensions`
+    );
+
+    // ==========================================
+    // STEP 2: SEARCH PINECONE
+    // ==========================================
 
     const index = pc.index(indexName);
 
@@ -34,7 +72,7 @@ export async function getLegalAnswerWithRAG(crimeText) {
     );
 
     // ==========================================
-    // STEP 2: GET RELEVANT LEGAL SECTIONS
+    // STEP 3: GET RELEVANT LEGAL SECTIONS
     // ==========================================
 
     const relevantSections = searchResults.matches
@@ -46,17 +84,18 @@ export async function getLegalAnswerWithRAG(crimeText) {
     }
 
     // ==========================================
-    // STEP 3: BUILD CONTEXT
+    // STEP 4: BUILD CONTEXT
     // ==========================================
 
-    let context = "RELEVANT LEGAL SECTIONS FROM DATABASE:\n\n";
+    let context =
+      "RELEVANT LEGAL SECTIONS FROM DATABASE:\n\n";
 
     const ipcSections = relevantSections.filter(
-      (s) => s.type === "IPC"
+      (section) => section.type === "IPC"
     );
 
     const bnsSections = relevantSections.filter(
-      (s) => s.type === "BNS"
+      (section) => section.type === "BNS"
     );
 
     if (ipcSections.length > 0) {
@@ -80,7 +119,7 @@ export async function getLegalAnswerWithRAG(crimeText) {
     }
 
     // ==========================================
-    // STEP 4: GROQ
+    // STEP 5: CREATE GROQ PROMPT
     // ==========================================
 
     const prompt = `
@@ -109,16 +148,25 @@ Punishment: [punishment]
 
 Rules:
 - Use only the provided database information.
-- Do not invent sections.
+- Do not invent legal sections.
 - Do not invent punishments.
 - Copy punishment exactly from the database.
 - If no IPC section applies, skip IPC.
 - If no BNS section applies, skip BNS.
 `;
 
+    // ==========================================
+    // STEP 6: GROQ AI
+    // ==========================================
+
     const completion = await groq.chat.completions.create({
       model: "openai/gpt-oss-20b",
       messages: [
+        {
+          role: "system",
+          content:
+            "You are a precise legal information assistant. Use only the information provided by the user.",
+        },
         {
           role: "user",
           content: prompt,
@@ -127,7 +175,8 @@ Rules:
       temperature: 0,
     });
 
-    const text = completion.choices[0]?.message?.content?.trim();
+    const text =
+      completion.choices[0]?.message?.content?.trim();
 
     if (!text) {
       throw new Error("Groq returned an empty response");
