@@ -1,6 +1,6 @@
 import Groq from "groq-sdk";
 import { pipeline } from "@huggingface/transformers";
-import { pc, indexName } from "../config/pinecone.js";
+import { qdrant, collectionName } from "../config/qdrant.js";
 import dotenv from "dotenv";
 
 dotenv.config();
