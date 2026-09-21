@@ -1,152 +1,221 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
-import { pc, indexName } from '../config/pinecone.js';
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import dotenv from 'dotenv';
+import { QdrantClient } from "@qdrant/js-client-rest";
+import { pipeline } from "@huggingface/transformers";
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
+import dotenv from "dotenv";
 
 dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const COLLECTION_NAME = "legal-sections";
+
+const qdrant = new QdrantClient({
+  url: process.env.QDRANT_URL,
+  apiKey: process.env.QDRANT_API_KEY,
+});
+
+let embeddingModel = null;
+
+async function createEmbedding(text) {
+  if (!embeddingModel) {
+    console.log("Loading embedding model...");
+
+    embeddingModel = await pipeline(
+      "feature-extraction",
+      "Xenova/all-MiniLM-L6-v2"
+    );
+
+    console.log("Embedding model loaded");
+  }
+
+  const output = await embeddingModel(text, {
+    pooling: "mean",
+    normalize: true,
+  });
+
+  return Array.from(output.data);
+}
 
 async function uploadLegalData() {
   try {
-    console.log('Starting upload to Pinecone...');
-    console.log('Index name:', indexName);
-    
-    // Verify Pinecone connection first
-    console.log('Testing Pinecone connection...');
-    const indexes = await pc.listIndexes();
-    console.log('Available indexes:', indexes.indexes?.map(i => i.name));
-    
-    // Check if our index exists
-    const indexExists = indexes.indexes?.some(i => i.name === indexName);
-    if (!indexExists) {
-      console.error(`❌ Index "${indexName}" not found!`);
-      console.log('Please create the index in Pinecone dashboard with:');
-      console.log('- Name: legal-sections');
-      console.log('- Dimension: 768');
-      console.log('- Metric: cosine');
-      return;
+    console.log("Starting upload to Qdrant...");
+
+    // ==========================================
+    // STEP 1: CHECK QDRANT
+    // ==========================================
+
+    console.log("Testing Qdrant connection...");
+
+    const collections = await qdrant.getCollections();
+
+    const collectionExists = collections.collections.some(
+      (collection) => collection.name === COLLECTION_NAME
+    );
+
+    if (!collectionExists) {
+      console.log(
+        `Collection "${COLLECTION_NAME}" not found. Creating it...`
+      );
+
+      await qdrant.createCollection(COLLECTION_NAME, {
+        vectors: {
+          size: 384,
+          distance: "Cosine",
+        },
+      });
+
+      console.log("✓ Qdrant collection created");
+    } else {
+      console.log("✓ Qdrant collection already exists");
     }
-    
-    console.log('✓ Index found');
-    
-    // Read legal data
-    const dataPath = path.join(__dirname, '../data/legal-sections.json');
-    const rawData = fs.readFileSync(dataPath, 'utf-8');
+
+    // ==========================================
+    // STEP 2: READ LEGAL DATA
+    // ==========================================
+
+    const dataPath = path.join(
+      __dirname,
+      "../data/legal-sections.json"
+    );
+
+    const rawData = fs.readFileSync(dataPath, "utf-8");
+
     const legalData = JSON.parse(rawData);
-    
-    // Get index
-    const index = pc.index(indexName);
-    
-    // Wait a bit for index to be fully ready
-    console.log('Waiting for index to be ready...');
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    const vectors = [];
-    const embeddingModel = genAI.getGenerativeModel({ model: "text-embedding-004" });
-    
-    // Process IPC sections
-    console.log('Processing IPC sections...');
+
+    console.log(
+      `IPC sections: ${legalData.ipc_sections.length}`
+    );
+
+    console.log(
+      `BNS sections: ${legalData.bns_sections.length}`
+    );
+
+    // ==========================================
+    // STEP 3: CREATE EMBEDDINGS
+    // ==========================================
+
+    const points = [];
+
+    // IPC
+    console.log("\nProcessing IPC sections...");
+
     for (const section of legalData.ipc_sections) {
-      const text = `IPC Section ${section.section}: ${section.title}. ${section.description}. Keywords: ${section.keywords.join(', ')}`;
-      
-      const result = await embeddingModel.embedContent(text);
-      const embedding = result.embedding.values;
-      
-      vectors.push({
+      const text = `
+IPC Section ${section.section}: ${section.title}.
+${section.description}.
+Keywords: ${section.keywords.join(", ")}
+`;
+
+      const embedding = await createEmbedding(text);
+
+      points.push({
         id: `ipc-${section.section}`,
-        values: embedding,
-        metadata: {
-          type: 'IPC',
+        vector: embedding,
+        payload: {
+          type: "IPC",
           section: section.section,
           title: section.title,
           description: section.description,
           punishment: section.punishment,
-          keywords: section.keywords.join(', ')
-        }
+          keywords: section.keywords.join(", "),
+        },
       });
-      
-      console.log(`✓ Processed IPC Section ${section.section}`);
+
+      console.log(
+        `✓ Processed IPC Section ${section.section}`
+      );
     }
-    
-    // Process BNS sections
-    console.log('Processing BNS sections...');
+
+    // BNS
+    console.log("\nProcessing BNS sections...");
+
     for (const section of legalData.bns_sections) {
-      const text = `BNS Section ${section.section}: ${section.title}. ${section.description}. Keywords: ${section.keywords.join(', ')}`;
-      
-      const result = await embeddingModel.embedContent(text);
-      const embedding = result.embedding.values;
-      
-      vectors.push({
+      const text = `
+BNS Section ${section.section}: ${section.title}.
+${section.description}.
+Keywords: ${section.keywords.join(", ")}
+`;
+
+      const embedding = await createEmbedding(text);
+
+      points.push({
         id: `bns-${section.section}`,
-        values: embedding,
-        metadata: {
-          type: 'BNS',
+        vector: embedding,
+        payload: {
+          type: "BNS",
           section: section.section,
           title: section.title,
           description: section.description,
           punishment: section.punishment,
-          keywords: section.keywords.join(', ')
-        }
+          keywords: section.keywords.join(", "),
+        },
       });
-      
-      console.log(`✓ Processed BNS Section ${section.section}`);
+
+      console.log(
+        `✓ Processed BNS Section ${section.section}`
+      );
     }
-    
-    // Upload to Pinecone with retry logic
-    console.log('Uploading to Pinecone...');
-    console.log(`Total vectors to upload: ${vectors.length}`);
-    
-    const batchSize = 10; // Smaller batch size for better reliability
+
+    // ==========================================
+    // STEP 4: UPLOAD TO QDRANT
+    // ==========================================
+
+    console.log("\nUploading vectors to Qdrant...");
+
+    const batchSize = 50;
+
     let successCount = 0;
-    
-    for (let i = 0; i < vectors.length; i += batchSize) {
-      const batch = vectors.slice(i, i + batchSize);
-      const batchNum = Math.floor(i / batchSize) + 1;
-      
-      try {
-        console.log(`Uploading batch ${batchNum} (${batch.length} vectors)...`);
-        await index.upsert(batch);
-        successCount += batch.length;
-        console.log(`✓ Batch ${batchNum} uploaded successfully`);
-        
-        // Wait between batches to avoid rate limits
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-      } catch (error) {
-        console.error(`❌ Failed to upload batch ${batchNum}:`, error.message);
-        
-        // Retry once
-        console.log(`Retrying batch ${batchNum}...`);
-        try {
-          await new Promise(resolve => setTimeout(resolve, 3000));
-          await index.upsert(batch);
-          successCount += batch.length;
-          console.log(`✓ Batch ${batchNum} uploaded on retry`);
-        } catch (retryError) {
-          console.error(`❌ Retry failed for batch ${batchNum}`);
-        }
-      }
+
+    for (let i = 0; i < points.length; i += batchSize) {
+      const batch = points.slice(i, i + batchSize);
+
+      const batchNumber =
+        Math.floor(i / batchSize) + 1;
+
+      console.log(
+        `Uploading batch ${batchNumber} (${batch.length} vectors)...`
+      );
+
+      await qdrant.upsert(COLLECTION_NAME, {
+        wait: true,
+        points: batch,
+      });
+
+      successCount += batch.length;
+
+      console.log(
+        `✓ Batch ${batchNumber} uploaded`
+      );
     }
-    
-    console.log('\n✅ Upload completed!');
-    console.log(`Successfully uploaded: ${successCount}/${vectors.length} vectors`);
-    
-    // Verify upload
-    console.log('\nVerifying upload...');
-    const stats = await index.describeIndexStats();
-    console.log('Index stats:', stats);
-    
+
+    // ==========================================
+    // STEP 5: VERIFY
+    // ==========================================
+
+    console.log("\nVerifying Qdrant collection...");
+
+    const collectionInfo =
+      await qdrant.getCollection(COLLECTION_NAME);
+
+    console.log(
+      "Vectors stored:",
+      collectionInfo.points_count
+    );
+
+    console.log("\n✅ Upload completed!");
+    console.log(
+      `Successfully uploaded: ${successCount}/${points.length}`
+    );
+
   } catch (error) {
-    console.error('❌ Upload failed:', error.message);
-    if (error.cause) {
-      console.error('Cause:', error.cause.message);
-    }
+    console.error(
+      "❌ Upload failed:",
+      error.message
+    );
+
     throw error;
   }
 }
